@@ -1,49 +1,74 @@
 // Popup settings script
 
 document.addEventListener('DOMContentLoaded', () => {
-    const urlInput = document.getElementById('claude-url');
+    const claudeUrlInput = document.getElementById('claude-url');
+    const chatGptUrlInput = document.getElementById('chatgpt-url');
+    const geminiUrlInput = document.getElementById('gemini-url');
     const saveBtn = document.getElementById('save-btn');
     const statusEl = document.getElementById('status');
-    const currentUrlEl = document.getElementById('current-url');
+    
+    const currentClaudeEl = document.getElementById('current-claude-url');
+    const currentChatGptEl = document.getElementById('current-chatgpt-url');
+    const currentGeminiEl = document.getElementById('current-gemini-url');
 
-    // Load saved URL
-    chrome.storage.sync.get(['claudeChatUrl'], (result) => {
-        if (result.claudeChatUrl) {
-            urlInput.value = result.claudeChatUrl;
-            currentUrlEl.textContent = result.claudeChatUrl;
-            currentUrlEl.classList.remove('none');
-        } else {
-            currentUrlEl.textContent = 'Not configured';
-            currentUrlEl.classList.add('none');
-        }
+    // Load saved URLs
+    chrome.storage.sync.get(['claudeChatUrl', 'chatGptUrl', 'geminiUrl'], (result) => {
+        updateDisplay(claudeUrlInput, currentClaudeEl, result.claudeChatUrl);
+        updateDisplay(chatGptUrlInput, currentChatGptEl, result.chatGptUrl);
+        updateDisplay(geminiUrlInput, currentGeminiEl, result.geminiUrl);
     });
 
-    // Save URL
-    saveBtn.addEventListener('click', () => {
-        const url = urlInput.value.trim();
+    function updateDisplay(inputEl, displayEl, url) {
+        if (url) {
+            inputEl.value = url;
+            displayEl.textContent = url;
+            displayEl.classList.remove('none');
+        } else {
+            displayEl.textContent = 'Not configured';
+            displayEl.classList.add('none');
+        }
+    }
 
-        // Validation
-        if (!url) {
-            showStatus('Please enter a Claude chat URL', 'error');
+    // Save URLs
+    saveBtn.addEventListener('click', () => {
+        const claudeUrl = claudeUrlInput.value.trim();
+        const chatGptUrl = chatGptUrlInput.value.trim();
+        const geminiUrl = geminiUrlInput.value.trim();
+
+        // Validation - ensure if provided, they match expected domains
+        if (claudeUrl && !claudeUrl.startsWith('https://claude.ai/')) {
+            showStatus('Claude URL must start with https://claude.ai/', 'error');
             return;
         }
 
-        if (!url.startsWith('https://claude.ai/')) {
-            showStatus('URL must start with https://claude.ai/', 'error');
+        if (chatGptUrl && !chatGptUrl.startsWith('https://chatgpt.com/')) {
+            showStatus('ChatGPT URL must start with https://chatgpt.com/', 'error');
+            return;
+        }
+
+        if (geminiUrl && !geminiUrl.startsWith('https://gemini.google.com/')) {
+            showStatus('Gemini URL must start with https://gemini.google.com/', 'error');
             return;
         }
 
         // Save
-        chrome.storage.sync.set({ claudeChatUrl: url }, () => {
+        chrome.storage.sync.set({ 
+            claudeChatUrl: claudeUrl,
+            chatGptUrl: chatGptUrl,
+            geminiUrl: geminiUrl
+        }, () => {
             showStatus('✓ Settings saved!', 'success');
-            currentUrlEl.textContent = url;
-            currentUrlEl.classList.remove('none');
+            updateDisplay(claudeUrlInput, currentClaudeEl, claudeUrl);
+            updateDisplay(chatGptUrlInput, currentChatGptEl, chatGptUrl);
+            updateDisplay(geminiUrlInput, currentGeminiEl, geminiUrl);
         });
     });
 
     // Enter key to save
-    urlInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') saveBtn.click();
+    [claudeUrlInput, chatGptUrlInput, geminiUrlInput].forEach(input => {
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') saveBtn.click();
+        });
     });
 
     function showStatus(message, type) {

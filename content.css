@@ -1,62 +1,71 @@
-/* ===== Claude JD Extension — Floating Button & Toast ===== */
+/* ===== Claude JD Extension — Floating Container & Buttons ===== */
 
-#claude-jd-ext-btn {
+#claude-jd-ext-container {
   position: fixed;
   bottom: 32px;
   right: 32px;
   z-index: 2147483647;
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: claude-jd-ext-fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.claude-jd-ext-btn {
+  display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 24px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #e8725a 0%, #da5b3c 50%, #c44a2e 100%);
+  border-radius: 12px;
   color: #ffffff;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.2px;
   cursor: pointer;
   box-shadow:
-    0 8px 32px rgba(218, 91, 60, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: claude-jd-ext-fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   user-select: none;
   -webkit-user-select: none;
 }
 
-#claude-jd-ext-btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow:
-    0 12px 40px rgba(218, 91, 60, 0.5),
-    0 4px 12px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  background: linear-gradient(135deg, #f0836c 0%, #e8725a 50%, #da5b3c 100%);
+.claude-jd-ext-btn.claude {
+  background: linear-gradient(135deg, #e8725a 0%, #da5b3c 50%, #c44a2e 100%);
 }
 
-#claude-jd-ext-btn:active {
-  transform: translateY(-1px) scale(0.98);
-  box-shadow:
-    0 4px 16px rgba(218, 91, 60, 0.3),
-    0 1px 4px rgba(0, 0, 0, 0.1);
+.claude-jd-ext-btn.chatgpt {
+  background: linear-gradient(135deg, #10a37f 0%, #0d8a6a 100%);
 }
 
-#claude-jd-ext-btn .claude-jd-ext-icon {
+.claude-jd-ext-btn.gemini {
+  background: linear-gradient(135deg, #4A90E2 0%, #9013FE 100%);
+}
+
+.claude-jd-ext-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.claude-jd-ext-btn:active {
+  transform: translateY(0);
+}
+
+.claude-jd-ext-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
 }
 
-#claude-jd-ext-btn .claude-jd-ext-icon svg {
-  width: 22px;
-  height: 22px;
+.claude-jd-ext-icon svg {
+  width: 20px;
+  height: 20px;
   fill: #ffffff;
 }
 
@@ -89,16 +98,15 @@
   border: 1px solid rgba(255, 80, 80, 0.2);
 }
 
-/* Fade out */
-#claude-jd-ext-toast.claude-jd-ext-fade-out,
-#claude-jd-ext-btn.claude-jd-ext-fade-out {
+#claude-jd-ext-container.claude-jd-ext-fade-out {
   animation: claude-jd-ext-fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* Pulse animation for the button while processing */
-#claude-jd-ext-btn.claude-jd-ext-processing {
+.claude-jd-ext-btn.claude-jd-ext-processing {
   pointer-events: none;
   animation: claude-jd-ext-pulse 1.5s ease-in-out infinite;
+  opacity: 0.8;
 }
 
 /* Keyframes */
